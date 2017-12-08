@@ -16,6 +16,7 @@ import java.awt.*;
 @NoArgsConstructor
 public class LoadMatrix {
     private Matrix matrix;
+    private boolean ok = false;
 
     void setMatrix(String matrixRules) {
         String[] sizeAndPoints = matrixRules.split("_");
@@ -28,6 +29,7 @@ public class LoadMatrix {
             Point p = new Point(x, y);
             matrix.setValue(p, 'X');
         }
+        ok = true;
     }
 
 }
