@@ -92,10 +92,38 @@ public class FindCoordinates {
             if (matrixUtil.isFree(matrix.getMatrixSize() - 2, 1)) {
                 blockedMoves++;
             }
+        } else if (p1.x == matrix.getMatrixSize() - 1 && p2.x == matrix.getMatrixSize() - 1 && p1.y == matrix.getMatrixSize() - 1 && p2.y == matrix.getMatrixSize() - 2) { //czyli jestesmy w dolnym prawym rogu i bloczek jest polozony pionowo
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 2, matrix.getMatrixSize() - 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 1, matrix.getMatrixSize() - 2)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 1, matrix.getMatrixSize() - 3)) {
+                blockedMoves++;
+            } else if (p1.y == p2.y && Math.abs(p1.x - p2.x) == 1) { //bloczek polozony w dowolnym miejscu poziomo
+                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) - 1, p1.y)) {
+                    blockedMoves++;
+                }
+                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2), p1.y + 1)) {
+                    blockedMoves++;
+                }
+                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 1, p1.y + 1)) {
+                    blockedMoves++;
+                }
+                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 2, p1.y)) {
+                    blockedMoves++;
+                }
+                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 1, p1.y - 1)) {
+                    blockedMoves++;
+                }
+                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2), p1.y - 1)) {
+                    blockedMoves++;
+                }
+            } //else if()//todo dowolone polozenie pionowe bloczka
+
+
         }
-
-        //TODO reszta cornerow!!! - prawy dolny rog zostal
-
         return blockedMoves;
     }
 }

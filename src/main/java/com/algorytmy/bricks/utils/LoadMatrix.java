@@ -19,7 +19,7 @@ public class LoadMatrix {
     private Matrix matrix;
     private boolean ok = false;
 
-    void setMatrix(String matrixRules) {
+    public void setMatrix(String matrixRules) {
         String[] sizeAndPoints = matrixRules.split("_");
         matrix = new Matrix(Integer.parseInt(sizeAndPoints[0]));
 
