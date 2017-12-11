@@ -72,9 +72,29 @@ public class FindCoordinates {
             if (matrixUtil.isFree(1, matrix.getMatrixSize() - 1)) {
                 blockedMoves++;
             }
+        } else if (p1.x == matrix.getMatrixSize() - 1 && p2.x == matrix.getMatrixSize() - 1 && p1.y == 0 && p2.y == 1) { //czyli jestesmy w gornym prawym rogu i bloczek jest polozony pionowo
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 2, 0)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 2, 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 1, 2)) {
+                blockedMoves++;
+            }
+        } else if (p1.x == matrix.getMatrixSize() - 1 && p2.x == matrix.getMatrixSize() - 1 && p1.y == 0 && p2.y == 1) { //czyli jestesmy w gornym prawym rogu i bloczek jest polozony poziomo
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 3, 0)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 1, 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrix.getMatrixSize() - 2, 1)) {
+                blockedMoves++;
+            }
         }
-        //TODO reszta cornerow!!!
 
+        //TODO reszta cornerow!!! - prawy dolny rog zostal
 
         return blockedMoves;
     }
