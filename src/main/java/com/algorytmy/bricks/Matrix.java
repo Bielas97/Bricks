@@ -1,21 +1,24 @@
 package com.algorytmy.bricks;
 
+import lombok.Setter;
+
 import java.awt.*;
 
 /**
  * @author jbielawski on 08.12.2017 <jakub.bielawski@coi.gov.pl>
  */
 public class Matrix {
+    @Setter
     private Character[][] matrix;
     private int matrixSize;
 
-    Matrix(int size) {
+    public Matrix(int size) {
         this.matrixSize = size;
         this.matrix = new Character[size][size];
         clear();
     }
 
-    int getMatrixSize() {
+    public int getMatrixSize() {
         return matrixSize;
     }
 
@@ -28,7 +31,7 @@ public class Matrix {
         }
     }
 
-    Character[][] getMatrix() {
+    public Character[][] getMatrix() {
         return matrix;
     }
 
@@ -40,7 +43,7 @@ public class Matrix {
         }
     }
 
-    void setValue(Point p, int value) {
+    public void setValue(Point p, int value) {
         setValue(p, (char) (value + '0'));
     }
 

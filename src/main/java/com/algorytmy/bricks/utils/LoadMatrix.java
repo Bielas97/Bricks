@@ -1,5 +1,6 @@
-package com.algorytmy.bricks;
+package com.algorytmy.bricks.utils;
 
+import com.algorytmy.bricks.Matrix;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
