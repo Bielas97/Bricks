@@ -27,103 +27,52 @@ public class FindCoordinates {
         return xy;
     }
 
-    private int countBlockedMoves(Point p1, Point p2) {
+    public int countBlockedMoves(Point p1, Point p2) {
         int blockedMoves = 1;
         MatrixUtil matrixUtil = new MatrixUtil(matrix);
-        Matrix cloned = matrixUtil.cloneMatrix();
 
-        if (p1.x == 0 && p2.x == 1 && p1.y == 0 && p2.y == 0) { //czyli jestesmy w gornym lewym rogu i bloczek jest polozony poziomo
-            if (matrixUtil.isFree(0, 1)) {// x=0 y=1
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(1, 1)) { //x=1 y=1
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(2, 0)) { //x=2 y=0
-                blockedMoves++;
-            }
-        } else if (p1.x == 0 && p2.x == 0 && p1.y == 0 && p2.y == 1) { //czyli jestesmy w gornym lewym rogu i bloczek jest polozony pionowo
-            if (matrixUtil.isFree(1, 0)) {// x=1 y=0
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(1, 1)) { //x=1 y=1
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(0, 2)) { //x=0 y=2
-                blockedMoves++;
-            }
-        } else if (p1.x == 0 && p2.x == 1 && p1.y == matrix.getMatrixSize() - 1 && p2.y == matrix.getMatrixSize() - 1) { //czyli jestesmy w dolnym lewym rogu i bloczek jest polozony poziomo
-            if (matrixUtil.isFree(0, matrix.getMatrixSize() - 2)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(1, matrix.getMatrixSize() - 2)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(2, matrix.getMatrixSize() - 1)) {
-                blockedMoves++;
-            }
-        } else if (p1.x == 0 && p2.x == 0 && p1.y == matrix.getMatrixSize() - 1 && p2.y == matrix.getMatrixSize() - 2) { //czyli jestesmy w gornym lewym rogu i bloczek jest polozony pionowo
-            if (matrixUtil.isFree(0, matrix.getMatrixSize() - 3)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(1, matrix.getMatrixSize() - 2)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(1, matrix.getMatrixSize() - 1)) {
-                blockedMoves++;
-            }
-        } else if (p1.x == matrix.getMatrixSize() - 1 && p2.x == matrix.getMatrixSize() - 1 && p1.y == 0 && p2.y == 1) { //czyli jestesmy w gornym prawym rogu i bloczek jest polozony pionowo
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 2, 0)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 2, 1)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 1, 2)) {
-                blockedMoves++;
-            }
-        } else if (p1.x == matrix.getMatrixSize() - 1 && p2.x == matrix.getMatrixSize() - 1 && p1.y == 0 && p2.y == 1) { //czyli jestesmy w gornym prawym rogu i bloczek jest polozony poziomo
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 3, 0)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 1, 1)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 2, 1)) {
-                blockedMoves++;
-            }
-        } else if (p1.x == matrix.getMatrixSize() - 1 && p2.x == matrix.getMatrixSize() - 1 && p1.y == matrix.getMatrixSize() - 1 && p2.y == matrix.getMatrixSize() - 2) { //czyli jestesmy w dolnym prawym rogu i bloczek jest polozony pionowo
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 2, matrix.getMatrixSize() - 1)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 1, matrix.getMatrixSize() - 2)) {
-                blockedMoves++;
-            }
-            if (matrixUtil.isFree(matrix.getMatrixSize() - 1, matrix.getMatrixSize() - 3)) {
-                blockedMoves++;
-            } else if (p1.y == p2.y && Math.abs(p1.x - p2.x) == 1) { //bloczek polozony w dowolnym miejscu poziomo
-                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) - 1, p1.y)) {
-                    blockedMoves++;
-                }
-                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2), p1.y + 1)) {
-                    blockedMoves++;
-                }
-                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 1, p1.y + 1)) {
-                    blockedMoves++;
-                }
-                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 2, p1.y)) {
-                    blockedMoves++;
-                }
-                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 1, p1.y - 1)) {
-                    blockedMoves++;
-                }
-                if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2), p1.y - 1)) {
-                    blockedMoves++;
-                }
-            } //else if()//todo dowolone polozenie pionowe bloczka
+        matrixUtil.isOutOfBoundsException(p1, p2);
 
-
+        if (p1.y == p2.y && Math.abs(p1.x - p2.x) == 1) { //bloczek polozony w dowolnym miejscu poziomo
+            if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) - 1, p1.y)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2), p1.y + 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 1, p1.y + 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 2, p1.y)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2) + 1, p1.y - 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(matrixUtil.getSmallerX(p1, p2), p1.y - 1)) {
+                blockedMoves++;
+            }
+        } else if (p1.x == p2.x && Math.abs(p1.y - p2.y) == 1) { //bloczek polozony w dowolnym miejscu pionowo
+            if (matrixUtil.isFree(p1.x, matrixUtil.getSmallerY(p1, p2) - 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(p1.x, matrixUtil.getSmallerY(p1, p2) + 2)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(p1.x - 1, matrixUtil.getSmallerY(p1, p2))) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(p1.x - 1, matrixUtil.getSmallerY(p1, p2) + 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(p1.x + 1, matrixUtil.getSmallerY(p1, p2) + 1)) {
+                blockedMoves++;
+            }
+            if (matrixUtil.isFree(p1.x + 1, matrixUtil.getSmallerY(p1, p2))) {
+                blockedMoves++;
+            }
         }
+
         return blockedMoves;
     }
 }

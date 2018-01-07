@@ -24,9 +24,17 @@ public class MatrixUtil {
         return cloned;
     }
 
+    public void isOutOfBoundsException(Point p1, Point p2){
+        if ((p1.x < 0 || p1.y < 0 || p1.x >= matrix.getMatrixSize() || p1.y >= matrix.getMatrixSize()) ||
+                p2.x < 0 || p2.y < 0 || p2.x >= matrix.getMatrixSize() || p2.y >= matrix.getMatrixSize()) {
+            throw new IndexOutOfBoundsException("poza plansze wyszedles");
+        }
+    }
+
     public boolean isFree(int x, int y) {
         if (x < 0 || y < 0 || x >= matrix.getMatrixSize() || y >= matrix.getMatrixSize()) {
-            throw new IndexOutOfBoundsException("poza plansze wyszedles");
+            //throw new IndexOutOfBoundsException("poza plansze wyszedles");
+            return false;
         }
         return matrix.getMatrix()[x][y].equals('0');
     }

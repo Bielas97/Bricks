@@ -43,11 +43,11 @@ public class Matrix {
         }
     }
 
-    public void setValue(Point p, int value) {
+    /*public void setValue(Point p, int value) {
         setValue(p, (char) (value + '0'));
-    }
+    }*/
 
-    void setValue(Point p, char value) {
+    public void setValue(Point p, char value) {
         if (value < '0') {
             throw new IllegalArgumentException("Lower than ASCII('0') ");
         }
