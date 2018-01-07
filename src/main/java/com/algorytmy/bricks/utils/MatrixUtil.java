@@ -31,6 +31,14 @@ public class MatrixUtil {
         }
     }
 
+    /*public boolean isFree(Point p1, Point p2) {
+        if ((p1.x < 0 || p1.y < 0 || p1.x >= matrix.getMatrixSize() || p1.y >= matrix.getMatrixSize()) ||
+                p2.x < 0 || p2.y < 0 || p2.x >= matrix.getMatrixSize() || p2.y >= matrix.getMatrixSize()) {
+            return false;
+        }
+        return (matrix.getValue(p1).equals('0') && matrix.getValue(p2).equals('0'));
+    }*/
+
     public boolean isFree(int x, int y) {
         if (x < 0 || y < 0 || x >= matrix.getMatrixSize() || y >= matrix.getMatrixSize()) {
             //throw new IndexOutOfBoundsException("poza plansze wyszedles");

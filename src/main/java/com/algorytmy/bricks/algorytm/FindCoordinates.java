@@ -2,29 +2,111 @@ package com.algorytmy.bricks.algorytm;
 
 import com.algorytmy.bricks.Matrix;
 import com.algorytmy.bricks.utils.MatrixUtil;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author jbielawski on 11.12.2017 <jakub.bielawski@coi.gov.pl>
  */
-@AllArgsConstructor
 @Data
 public class FindCoordinates {
     private Matrix matrix;
 
-    public int[] coordinates() {
-        int[] xy = new int[2];
+    public FindCoordinates(Matrix matrix) {
+        this.matrix = matrix;
+    }
 
+    private List<Point> findAllHorizontalPoints() {
+        MatrixUtil matrixUtil = new MatrixUtil(matrix);
+        List<Point> horizontalPoints = new ArrayList<Point>();
+        // i wiersz
+        // j kolumny
         for (int i = 0; i < matrix.getMatrixSize(); i++) {
-            for (int j = 0; j < matrix.getMatrixSize(); j++) {
-
-
+            for (int j = 0; j < matrix.getMatrixSize() - 1; j++) {
+                if (matrixUtil.isFree(i, j) && matrixUtil.isFree(i, j + 1)) {
+                    Point p1 = new Point(i, j);
+                    Point p2 = new Point(i, j + 1);
+                    horizontalPoints.add(p1);
+                    horizontalPoints.add(p2);
+                }
             }
         }
-        return xy;
+
+        return horizontalPoints;
+    }
+
+    private List<Point> findAllVerticalPoints() {
+        MatrixUtil matrixUtil = new MatrixUtil(matrix);
+        List<Point> verticalPoints = new ArrayList<Point>();
+        // i wiersz
+        // j kolumny
+        for (int i = 0; i < matrix.getMatrixSize() - 1; i++) {
+            for (int j = 0; j < matrix.getMatrixSize(); j++) {
+                if (matrixUtil.isFree(i, j) && matrixUtil.isFree(i + 1, j)) {
+                    Point p1 = new Point(i, j);
+                    Point p2 = new Point(i + 1, j);
+                    verticalPoints.add(p1);
+                    verticalPoints.add(p2);
+                }
+            }
+        }
+
+        return verticalPoints;
+    }
+
+    public Point[] findVerticalCoordinates() {
+        Point[] points = new Point[2];
+
+        int idx = 0;
+        Point[] oneBlock;
+        List<Point[]> blocks = new ArrayList<Point[]>();
+        for (int i = 0; i < (findAllVerticalPoints().size() / 2); i++) {
+            oneBlock = new Point[2];
+            oneBlock[0] = findAllVerticalPoints().get(idx);
+            oneBlock[1] = findAllVerticalPoints().get(idx + 1);
+            blocks.add(oneBlock);
+            idx = idx + 2;
+        }
+
+        int maxBlockedMoves = 1;
+        for (int i = 0; i < blocks.size(); i++) {
+            if (countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]) > maxBlockedMoves) {
+                maxBlockedMoves = countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]);
+                points[0] = blocks.get(i)[0];
+                points[1] = blocks.get(i)[1];
+            }
+        }
+
+        return points;
+    }
+
+    public Point[] findHorizontalCoordinates() {
+        Point[] points = new Point[2];
+
+        int idx = 0;
+        Point[] oneBlock;
+        List<Point[]> blocks = new ArrayList<Point[]>();
+        for (int i = 0; i < (findAllHorizontalPoints().size() / 2); i++) {
+            oneBlock = new Point[2];
+            oneBlock[0] = findAllHorizontalPoints().get(idx);
+            oneBlock[1] = findAllHorizontalPoints().get(idx + 1);
+            blocks.add(oneBlock);
+            idx = idx + 2;
+        }
+
+        int maxBlockedMoves = 1;
+        for (int i = 0; i < blocks.size(); i++) {
+            if (countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]) > maxBlockedMoves) {
+                maxBlockedMoves = countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]);
+                points[0] = blocks.get(i)[0];
+                points[1] = blocks.get(i)[1];
+            }
+        }
+
+        return points;
     }
 
     public int countBlockedMoves(Point p1, Point p2) {

@@ -22,7 +22,7 @@ public class Matrix {
         return matrixSize;
     }
 
-    Character getValue(Point p) {
+    public Character getValue(Point p) {
         try {
             return matrix[p.x][p.y];
         } catch (IndexOutOfBoundsException e) {
