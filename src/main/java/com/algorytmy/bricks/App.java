@@ -23,6 +23,8 @@ public class App {
         Point p2 = new Point(2,3);
         System.out.println(findCoordinates.countBlockedMoves(p1, p2));
 
+
+
     }
 }
 
