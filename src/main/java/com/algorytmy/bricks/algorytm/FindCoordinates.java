@@ -7,6 +7,7 @@ import lombok.Data;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author jbielawski on 11.12.2017 <jakub.bielawski@coi.gov.pl>
@@ -57,7 +58,7 @@ public class FindCoordinates {
         return verticalPoints;
     }
 
-    public Point[] findVerticalCoordinates() {
+    private Point[] findVerticalCoordinates() {
         Point[] points = new Point[2];
 
         int idx = 0;
@@ -83,7 +84,7 @@ public class FindCoordinates {
         return points;
     }
 
-    public Point[] findHorizontalCoordinates() {
+    private Point[] findHorizontalCoordinates() {
         Point[] points = new Point[2];
 
         int idx = 0;
@@ -97,6 +98,9 @@ public class FindCoordinates {
             idx = idx + 2;
         }
 
+        List<Point[]> sameBlockedMovesBlocks = new ArrayList<Point[]>();
+        Point[] sameBlockedMovesPoints;
+
         int maxBlockedMoves = 1;
         for (int i = 0; i < blocks.size(); i++) {
             if (countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]) > maxBlockedMoves) {
@@ -109,7 +113,88 @@ public class FindCoordinates {
         return points;
     }
 
-    public int countBlockedMoves(Point p1, Point p2) {
+    private int countFreePlacesInARow(int row) {
+        int result = 0;
+        MatrixUtil matrixUtil = new MatrixUtil(matrix);
+        for (int i = 0; i < matrix.getMatrixSize(); i++) {
+            if (matrixUtil.isFree(row, i)) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private int countFreePlacesInAColumn(int column) {
+        int result = 0;
+        MatrixUtil matrixUtil = new MatrixUtil(matrix);
+        for (int i = 0; i < matrix.getMatrixSize(); i++) {
+            if (matrixUtil.isFree(i, column)) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public Point[] findAnswer() {
+        Point[] answer = new Point[2];
+        MatrixUtil matrixUtil = new MatrixUtil(matrix);
+
+        //jesli w wierszu lub kolumnie zostaly tylko dwa punkty obok siebie wolne to zapelnij je
+        for (int i = 0; i < matrix.getMatrixSize() - 1; i++) {
+            for (int j = 0; j < matrix.getMatrixSize() - 1; j++) {
+                if (countFreePlacesInARow(i) == 2 && matrixUtil.isFree(i, j) && matrixUtil.isFree(i, j + 1)) {
+                    answer[0] = new Point(i, j);
+                    answer[1] = new Point(i, j + 1);
+                } else if (countFreePlacesInAColumn(j) == 2 && matrixUtil.isFree(i, j) && matrixUtil.isFree(i + 1, j)) {
+                    answer[0] = new Point(i, j);
+                    answer[1] = new Point(i + 1, j);
+                }
+            }
+        }
+
+        if (answer[0] == null && answer[1] == null) {
+
+            Point pointHorizontal0 = null;
+            Point pointHorizontal1 = null;
+            if (findHorizontalCoordinates()[0] != null && findHorizontalCoordinates()[1] != null) {
+                pointHorizontal0 = new Point(findHorizontalCoordinates()[0].x, findHorizontalCoordinates()[0].y);
+                pointHorizontal1 = new Point(findHorizontalCoordinates()[1].x, findHorizontalCoordinates()[1].y);
+            }
+            Point pointVertical0 = null;
+            Point pointVertical1 = null;
+            if (findVerticalCoordinates()[0] != null && findVerticalCoordinates()[1] != null) {
+                pointVertical0 = new Point(findVerticalCoordinates()[0].x, findVerticalCoordinates()[0].y);
+                pointVertical1 = new Point(findVerticalCoordinates()[1].x, findVerticalCoordinates()[1].y);
+            }
+
+            if (pointHorizontal0 == null || pointHorizontal1 == null) {
+                answer[0] = pointVertical0;
+                answer[1] = pointVertical1;
+            } else if (pointVertical0 == null || pointVertical1 == null) {
+                answer[0] = pointHorizontal0;
+                answer[1] = pointHorizontal1;
+            } else if (countBlockedMoves(pointHorizontal0, pointHorizontal1) == countBlockedMoves(pointVertical0, pointVertical1)) {
+                Random rnd = new Random();
+                if (rnd.nextInt() % 2 == 0) {
+                    answer[0] = pointHorizontal0;
+                    answer[1] = pointHorizontal1;
+                } else {
+                    answer[0] = pointVertical0;
+                    answer[1] = pointVertical1;
+                }
+            } else if (countBlockedMoves(pointHorizontal0, pointHorizontal1) > countBlockedMoves(pointVertical0, pointVertical1)) {
+                answer[0] = pointHorizontal0;
+                answer[1] = pointHorizontal1;
+            } else {
+                answer[0] = pointVertical0;
+                answer[1] = pointVertical1;
+            }
+
+        }
+        return answer;
+    }
+
+    private int countBlockedMoves(Point p1, Point p2) {
         int blockedMoves = 1;
         MatrixUtil matrixUtil = new MatrixUtil(matrix);
 
