@@ -54,8 +54,7 @@ public class App {
                 putOpponentPoints(opponentMove, matrix.getMatrix());
                 //dzialanie
                 System.out.println(matrix.getMatrix());
-                stop = scan.nextLine();
-            } while (!stop.equals("STOP"));
+            } while (!opponentMove.matches(regex));
 
         }
 
