@@ -1,7 +1,9 @@
 package com.algorytmy.bricks.algorytm;
 
 import com.algorytmy.bricks.Matrix;
+import com.algorytmy.bricks.utils.BST;
 import com.algorytmy.bricks.utils.MatrixUtil;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.awt.*;
@@ -10,16 +12,19 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * @author jbielawski on 11.12.2017 <jakub.bielawski@coi.gov.pl>
+ * @author jbielawski on 11.12.2017 <jakub.bielawski@wawasoft.com>
+ *     klasa z algorytmem
  */
 @Data
+@AllArgsConstructor
 public class FindCoordinates {
     private Matrix matrix;
+    private BST binarySearchTree;
 
-    public FindCoordinates(Matrix matrix) {
-        this.matrix = matrix;
-    }
-
+    /**
+     * znajduje wszystkie dostepne poziome ruchy
+     * @return
+     */
     private List<Point> findAllHorizontalPoints() {
         MatrixUtil matrixUtil = new MatrixUtil(matrix);
         List<Point> horizontalPoints = new ArrayList<Point>();
@@ -35,10 +40,13 @@ public class FindCoordinates {
                 }
             }
         }
-
         return horizontalPoints;
     }
 
+    /**
+     * znajduje wszystkie dostepne pionowe ruchy
+     * @return
+     */
     private List<Point> findAllVerticalPoints() {
         MatrixUtil matrixUtil = new MatrixUtil(matrix);
         List<Point> verticalPoints = new ArrayList<Point>();
@@ -54,126 +62,151 @@ public class FindCoordinates {
                 }
             }
         }
-
         return verticalPoints;
     }
 
+    /**
+     * znajduje optymalny pinowy ruch
+     * @return
+     */
     private Point[] findVerticalCoordinates() {
         Point[] points = new Point[2];
 
-        int idx = 0;
-        Point[] oneBlock;
-        List<Point[]> blocks = new ArrayList<Point[]>();
-        for (int i = 0; i < (findAllVerticalPoints().size() / 2); i++) {
-            oneBlock = new Point[2];
-            oneBlock[0] = findAllVerticalPoints().get(idx);
-            oneBlock[1] = findAllVerticalPoints().get(idx + 1);
-            blocks.add(oneBlock);
-            idx = idx + 2;
-        }
-
-        int maxBlockedMoves = 1;
-        for (int i = 0; i < blocks.size(); i++) {
-            if (countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]) > maxBlockedMoves) {
-                maxBlockedMoves = countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]);
-                points[0] = blocks.get(i)[0];
-                points[1] = blocks.get(i)[1];
-            }
-        }
-
-        return points;
-    }
-
-    private Point[] findHorizontalCoordinates() {
-        Point[] points = new Point[2];
+        List<Point> favp = findAllVerticalPoints();
 
         int idx = 0;
         Point[] oneBlock;
         List<Point[]> blocks = new ArrayList<Point[]>();
-        for (int i = 0; i < (findAllHorizontalPoints().size() / 2); i++) {
+        for (int i = 0; i < (favp.size() / 2); i++) {
             oneBlock = new Point[2];
-            oneBlock[0] = findAllHorizontalPoints().get(idx);
-            oneBlock[1] = findAllHorizontalPoints().get(idx + 1);
+            oneBlock[0] = favp.get(idx);
+            oneBlock[1] = favp.get(idx + 1);
+            if (countBlockedMoves(oneBlock[0], oneBlock[1]) == 7) {
+                //break;
+                return oneBlock;
+            }
             blocks.add(oneBlock);
             idx = idx + 2;
         }
-
-        List<Point[]> sameBlockedMovesBlocks = new ArrayList<Point[]>();
-        Point[] sameBlockedMovesPoints;
-
-        int maxBlockedMoves = 1;
-        for (int i = 0; i < blocks.size(); i++) {
-            if (countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]) > maxBlockedMoves) {
-                maxBlockedMoves = countBlockedMoves(blocks.get(i)[0], blocks.get(i)[1]);
-                points[0] = blocks.get(i)[0];
-                points[1] = blocks.get(i)[1];
-            }
-        }
-
-        return points;
-    }
-
-    private int countFreePlacesInARow(int row) {
-        int result = 0;
-        MatrixUtil matrixUtil = new MatrixUtil(matrix);
-        for (int i = 0; i < matrix.getMatrixSize(); i++) {
-            if (matrixUtil.isFree(row, i)) {
-                result++;
-            }
-        }
-        return result;
-    }
-
-    private int countFreePlacesInAColumn(int column) {
-        int result = 0;
-        MatrixUtil matrixUtil = new MatrixUtil(matrix);
-        for (int i = 0; i < matrix.getMatrixSize(); i++) {
-            if (matrixUtil.isFree(i, column)) {
-                result++;
-            }
-        }
-        return result;
-    }
-
-    public Point[] findAnswer() {
-        Point[] answer = new Point[2];
-        MatrixUtil matrixUtil = new MatrixUtil(matrix);
-
-        //jesli w wierszu lub kolumnie zostaly tylko dwa punkty obok siebie wolne to zapelnij je
-        for (int i = 0; i < matrix.getMatrixSize() - 1; i++) {
-            for (int j = 0; j < matrix.getMatrixSize() - 1; j++) {
-                if (countFreePlacesInARow(i) == 2 && matrixUtil.isFree(i, j) && matrixUtil.isFree(i, j + 1)) {
-                    answer[0] = new Point(i, j);
-                    answer[1] = new Point(i, j + 1);
-                } else if (countFreePlacesInAColumn(j) == 2 && matrixUtil.isFree(i, j) && matrixUtil.isFree(i + 1, j)) {
-                    answer[0] = new Point(i, j);
-                    answer[1] = new Point(i + 1, j);
+        if (blocks.size() == 1) {
+            points[0] = blocks.get(0)[0];
+            points[1] = blocks.get(0)[1];
+        } else if (blocks.size() == 0) {
+            return null;
+        } else {
+            int maxBlockedMoves = 1;
+            for (Point[] block : blocks) {
+                if (countBlockedMoves(block[0], block[1]) > maxBlockedMoves) {
+                    maxBlockedMoves = countBlockedMoves(block[0], block[1]);
+                    points[0] = block[0];
+                    points[1] = block[1];
                 }
             }
+            if (maxBlockedMoves == 1) {
+                points[0] = blocks.get(0)[0];
+                points[1] = blocks.get(0)[1];
+            }
+        }
+        return points;
+    }
+
+    /**
+     * znajduje optymalny poziomy ruch
+     * @return
+     */
+    private Point[] findHorizontalCoordinates() {
+        Point[] points = new Point[2];
+        List<Point> fahp = findAllHorizontalPoints();
+
+        int idx = 0;
+        Point[] oneBlock;
+        List<Point[]> blocks = new ArrayList<Point[]>();
+        for (int i = 0; i < (fahp.size() / 2); i++) {
+            oneBlock = new Point[2];
+            oneBlock[0] = fahp.get(idx);
+            oneBlock[1] = fahp.get(idx + 1);
+            if (countBlockedMoves(oneBlock[0], oneBlock[1]) == 7) {
+                //break;
+                return oneBlock;
+            }
+            blocks.add(oneBlock);
+            idx = idx + 2;
         }
 
-        if (answer[0] == null && answer[1] == null) {
-
-            Point pointHorizontal0 = null;
-            Point pointHorizontal1 = null;
-            if (findHorizontalCoordinates()[0] != null && findHorizontalCoordinates()[1] != null) {
-                pointHorizontal0 = new Point(findHorizontalCoordinates()[0].x, findHorizontalCoordinates()[0].y);
-                pointHorizontal1 = new Point(findHorizontalCoordinates()[1].x, findHorizontalCoordinates()[1].y);
+        if (blocks.size() == 1) {
+            points[0] = blocks.get(0)[0];
+            points[1] = blocks.get(0)[1];
+        } else if (blocks.size() == 0) {
+            return null;
+        } else {
+            int maxBlockedMoves = 1;
+            for (Point[] block : blocks) {
+                if (countBlockedMoves(block[0], block[1]) > maxBlockedMoves) {
+                    maxBlockedMoves = countBlockedMoves(block[0], block[1]);
+                    points[0] = block[0];
+                    points[1] = block[1];
+                }
             }
-            Point pointVertical0 = null;
-            Point pointVertical1 = null;
-            if (findVerticalCoordinates()[0] != null && findVerticalCoordinates()[1] != null) {
-                pointVertical0 = new Point(findVerticalCoordinates()[0].x, findVerticalCoordinates()[0].y);
-                pointVertical1 = new Point(findVerticalCoordinates()[1].x, findVerticalCoordinates()[1].y);
+            if (maxBlockedMoves == 1) {
+                points[0] = blocks.get(0)[0];
+                points[1] = blocks.get(0)[1];
             }
+        }
+        return points;
+    }
 
-            if (pointHorizontal0 == null || pointHorizontal1 == null) {
-                answer[0] = pointVertical0;
-                answer[1] = pointVertical1;
-            } else if (pointVertical0 == null || pointVertical1 == null) {
-                answer[0] = pointHorizontal0;
-                answer[1] = pointHorizontal1;
-            } else if (countBlockedMoves(pointHorizontal0, pointHorizontal1) == countBlockedMoves(pointVertical0, pointVertical1)) {
+    /**
+     * podaje koncowy ruch
+     * @return
+     * @throws Exception
+     */
+    public Point[] findAnswer() throws Exception {
+        Point[] answer = new Point[2];
+        //jesli w wierszu lub kolumnie zostaly tylko dwa punkty obok siebie wolne to zapelnij je
+        //nie zrobilem tego, nie starczylo czasu
+
+        /*int idxColumn = 0;
+        int idxRow = 0;
+        int idx = 0;
+        while (idx < matrix.getMatrixSize() - 1) {
+            if (countFreePlacesInARow(idx) == 2 && matrixUtil.isFree(idx, idxColumn) && matrixUtil.isFree(idx, idxColumn + 1)) {
+                System.out.println("weszlo row");
+                answer[0] = new Point(idx, idxColumn);
+                answer[1] = new Point(idx, idxColumn + 1);
+                return answer;
+            } else {
+                idxColumn++;
+            }
+            if (countFreePlacesInAColumn(idx) == 2 && matrixUtil.isFree(idx, idxRow) && matrixUtil.isFree(idx, idxRow + 1)) {
+                System.out.println("weszlo column");
+                answer[0] = new Point(idxRow, idx);
+                answer[1] = new Point(idxRow + 1, idx);
+                return answer;
+            } else {
+                idxRow++;
+            }
+            idx++;*/
+
+        Point pointVertical0;
+        Point pointVertical1;
+        Point pointHorizontal0;
+        Point pointHorizontal1;
+        if (findHorizontalCoordinates() == null && findVerticalCoordinates() == null) {
+            throw new Exception("brak możliwych ruchów");
+        } else if (findHorizontalCoordinates() != null && findVerticalCoordinates() == null) {
+            answer[0] = findHorizontalCoordinates()[0];
+            answer[1] = findHorizontalCoordinates()[1];
+            return answer;
+        } else if (findHorizontalCoordinates() == null && findVerticalCoordinates() != null) {
+            answer[0] = findVerticalCoordinates()[0];
+            answer[1] = findVerticalCoordinates()[1];
+            return answer;
+        } else {
+            pointVertical0 = findVerticalCoordinates()[0];
+            pointVertical1 = findVerticalCoordinates()[1];
+            pointHorizontal0 = findHorizontalCoordinates()[0];
+            pointHorizontal1 = findHorizontalCoordinates()[1];
+            if (countBlockedMoves(pointHorizontal0, pointHorizontal1) == countBlockedMoves(pointVertical0, pointVertical1)) {
                 Random rnd = new Random();
                 if (rnd.nextInt() % 2 == 0) {
                     answer[0] = pointHorizontal0;
@@ -189,13 +222,20 @@ public class FindCoordinates {
                 answer[0] = pointVertical0;
                 answer[1] = pointVertical1;
             }
-
         }
+
+        binarySearchTree.insert(answer);
         return answer;
     }
 
+    /**
+     * oblicza blokowane ruchy dla postawionego bloczka o punktach p1, p2
+     * @param p1
+     * @param p2
+     * @return
+     */
     private int countBlockedMoves(Point p1, Point p2) {
-        int blockedMoves = 1;
+        int blockedMoves = 1; // zawsze ustawiajac bloczek blokujemy przynjamniej 1 ruch
         MatrixUtil matrixUtil = new MatrixUtil(matrix);
 
         matrixUtil.isOutOfBoundsException(p1, p2);

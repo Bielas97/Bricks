@@ -5,7 +5,8 @@ import lombok.Setter;
 import java.awt.*;
 
 /**
- * @author jbielawski on 08.12.2017 <jakub.bielawski@coi.gov.pl>
+ * @author jbielawski on 08.12.2017 <jakub.bielawski@wawasoft.com>
+ *     klasa zawierajaca wlasciwosci planszy do gry
  */
 public class Matrix {
     @Setter
@@ -22,15 +23,6 @@ public class Matrix {
         return matrixSize;
     }
 
-    public Character getValue(Point p) {
-        try {
-            return matrix[p.x][p.y];
-        } catch (IndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException("DataCell(" + String.valueOf(p.x) + ";" + String.valueOf(p.y) + ")"
-                    + " is outside data matrix " + matrixSizeToString() + ".");
-        }
-    }
-
     public Character[][] getMatrix() {
         return matrix;
     }
@@ -42,10 +34,6 @@ public class Matrix {
             }
         }
     }
-
-    /*public void setValue(Point p, int value) {
-        setValue(p, (char) (value + '0'));
-    }*/
 
     public void setValue(Point p, char value) {
         if (value < '0') {

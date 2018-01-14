@@ -1,71 +1,89 @@
 package com.algorytmy.bricks;
 
 import com.algorytmy.bricks.algorytm.FindCoordinates;
+import com.algorytmy.bricks.utils.BST;
 import com.algorytmy.bricks.utils.LoadMatrix;
+import com.algorytmy.bricks.utils.MatrixUtil;
 
 import java.awt.*;
 import java.util.Scanner;
 
 /**
- * Pomysl jest taki zeby stawiac bloczki tak zeby blokowac jak najwiecej ruchow przeciwnika
+ * Mój algorytm opiera sie o blokowaniu przeciwnikowi jak najwiecej ruchow
+ * przykladowo jesli mamy plansze
+ *
+ *      0   0   0   0
+ *      0   0   0   0
+ *      0   0   0   0
+ *      0   0   0   0
+ *
+ * i ustawimy odpowiednio nasz bloczek
+ *
+ *      0   0   0   0
+ *      0   X   X   0
+ *      0   0   0   0
+ *      0   0   0   0
+ *
+ * to zablokowalismy przeciwnikowi 7 ruchow przedstawionych ponizej
+ *
+ *      0   -   -   0
+ *      -   -   -   -
+ *      0   -   -   0
+ *      0   0   0   0
+ *
  */
 public class App {
-    public static void main(String[] args) {
 
-        //LoadMatrix matrix = new LoadMatrix();
-        //matrix.setMatrix("3_0x1_1x1_1x2_2x1_2x2");
-        //ALgorytm
-        //System.out.println(matrix.getMatrix());
-        /*if(matrix.isOk()){
-            System.out.println("OK");
-        }*/
-        //FindCoordinates findCoordinates = new FindCoordinates(matrix.getMatrix());
-        /*Point p1 = new Point(1,1);
-        Point p2 = new Point(1,2);
-        System.out.println(findCoordinates.countBlockedMoves(p1, p2));
-        findCoordinates.findVerticalCoordinates();*/
-        //System.out.println("odpowiedz    "+Arrays.toString(findCoordinates.findHorizontalCoordinates()));
-        //System.out.println(Arrays.toString(findCoordinates.findAnswer()));
-
-
+    /**
+     * main
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
         game();
     }
 
-    private static void game() {
+    /**
+     * nakladka na rozgrywke
+     * @throws Exception
+     */
+    private static void game() throws Exception {
         Scanner scan = new Scanner(System.in);
         String rules = scan.nextLine();
         LoadMatrix matrix = new LoadMatrix();
         matrix.setMatrix(rules);
         System.out.println("OK");
 
-        FindCoordinates findCoordinates = new FindCoordinates(matrix.getMatrix());
+        BST binarySearchTree = new BST();
+        FindCoordinates findCoordinates = new FindCoordinates(matrix.getMatrix(), binarySearchTree);
 
         String regex = "\\dx\\d\\_\\dx\\d";
         String start = scan.nextLine();
-        String stop;
-        if (start.equals("START") || start.equals("Start") || start.equals("start")) {
-            String end = "STOP";
-            String opponentMove;
+        String opponentMove;
+        if (start.equalsIgnoreCase("start")) {
             do {
                 putMyPoints(matrix.getMatrix(), findCoordinates);
-                //dzialanie
-                System.out.println(matrix.getMatrix());
                 opponentMove = scan.nextLine();
                 putOpponentPoints(opponentMove, matrix.getMatrix());
-                //dzialanie
-                System.out.println(matrix.getMatrix());
-            } while (!opponentMove.matches(regex));
-
+            } while (opponentMove.matches(regex));
+        } else if (start.matches(regex)) {
+            opponentMove = start;
+            do {
+                putOpponentPoints(opponentMove, matrix.getMatrix());
+                putMyPoints(matrix.getMatrix(), findCoordinates);
+                opponentMove = scan.nextLine();
+            } while (opponentMove.matches(regex));
         }
-
-        /*String oppMove = scan.nextLine();
-        putOpponentPoints(oppMove, matrix.getMatrix());
-        System.out.println(matrix.getMatrix());*/
-
     }
 
-    private static void putOpponentPoints(String points, Matrix matrix) {
-        //1x2_2x3
+    /**
+     * kladzie bloczek przeciwnika na plansze
+     * @param points
+     * @param matrix
+     * @throws Exception
+     */
+    private static void putOpponentPoints(String points, Matrix matrix) throws Exception {
+        MatrixUtil matrixUtil = new MatrixUtil(matrix);
         String[] parsedPoints = points.split("_");
         int P1row = Integer.parseInt(String.valueOf(parsedPoints[0].charAt(0)));
         int P1column = Integer.parseInt(String.valueOf(parsedPoints[0].charAt(2)));
@@ -75,14 +93,25 @@ public class App {
         Point p1 = new Point(P1row, P1column);
         Point p2 = new Point(P2row, P2column);
 
-        matrix.setValue(p1, 'X');
-        matrix.setValue(p2, 'X');
+        if (matrixUtil.isFree(p1.x, p1.y) && matrixUtil.isFree(p2.x, p2.y)) {
+            matrix.setValue(p1, 'X');
+            matrix.setValue(p2, 'X');
+        } else {
+            throw new Exception("klocek lub punkt zostal juz postawiony na tym miejscu wczesniej, przeciwnik napisal zly program");
+        }
     }
 
-    private static void putMyPoints(Matrix matrix, FindCoordinates findCoordinates) {
+    /**
+     * kladzie moj bloczek na plansze i wyswietla go na konsoli
+     * @param matrix
+     * @param findCoordinates
+     * @throws Exception
+     */
+    private static void putMyPoints(Matrix matrix, FindCoordinates findCoordinates) throws Exception {
         Point[] points = findCoordinates.findAnswer();
         matrix.setValue(points[0], 'X');
         matrix.setValue(points[1], 'X');
+        System.out.println(points[0].x + "x" + points[0].y + "_" + points[1].x + "x" + points[1].y);
     }
 }
 

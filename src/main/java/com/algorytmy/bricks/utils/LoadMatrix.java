@@ -9,7 +9,8 @@ import lombok.ToString;
 import java.awt.*;
 
 /**
- * @author jbielawski on 08.12.2017 <jakub.bielawski@coi.gov.pl>
+ * @author jbielawski on 08.12.2017 <jakub.bielawski@wawasoft.com>
+ *     klasa do ladowania planszy gry
  */
 @Getter
 @ToString
@@ -32,5 +33,4 @@ public class LoadMatrix {
         }
         ok = true;
     }
-
 }
