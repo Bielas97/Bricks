@@ -28,7 +28,7 @@ public class BST {
         }
     }
 
-    private int valueOfPointInMatrix(Point[] result){
+    private int valueOfPointInMatrix(Point[] result) {
         return result[0].x + result[0].y + result[1].x + result[1].y;
     }
 

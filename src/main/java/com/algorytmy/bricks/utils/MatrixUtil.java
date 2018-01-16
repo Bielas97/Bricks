@@ -39,7 +39,7 @@ public class MatrixUtil {
             //throw new IndexOutOfBoundsException("poza plansze wyszedles");
             return false;
         }
-        return matrix.getMatrix()[x][y].equals('0');
+        return matrix.getMatrix()[y][x].equals('0');
     }
 
     /**

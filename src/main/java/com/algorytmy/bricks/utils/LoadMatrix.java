@@ -24,9 +24,13 @@ public class LoadMatrix {
         String[] sizeAndPoints = matrixRules.split("_");
         matrix = new Matrix(Integer.parseInt(sizeAndPoints[0]));
 
+        String[] points;
+        int x;
+        int y;
         for (int i = 1; i < sizeAndPoints.length; i++) {
-            int x = Integer.parseInt(String.valueOf(sizeAndPoints[i].charAt(0)));
-            int y = Integer.parseInt(String.valueOf(sizeAndPoints[i].charAt(2)));
+            points = sizeAndPoints[i].split("[xX]");
+            y = Integer.parseInt(String.valueOf(points[0]));
+            x = Integer.parseInt(String.valueOf(points[1]));
 
             Point p = new Point(x, y);
             matrix.setValue(p, 'X');

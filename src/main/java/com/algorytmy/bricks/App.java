@@ -11,31 +11,31 @@ import java.util.Scanner;
 /**
  * Mój algorytm opiera sie o blokowaniu przeciwnikowi jak najwiecej ruchow
  * przykladowo jesli mamy plansze
- *
- *      0   0   0   0
- *      0   0   0   0
- *      0   0   0   0
- *      0   0   0   0
- *
+ * <p>
+ * 0   0   0   0
+ * 0   0   0   0
+ * 0   0   0   0
+ * 0   0   0   0
+ * <p>
  * i ustawimy odpowiednio nasz bloczek
- *
- *      0   0   0   0
- *      0   X   X   0
- *      0   0   0   0
- *      0   0   0   0
- *
+ * <p>
+ * 0   0   0   0
+ * 0   X   X   0
+ * 0   0   0   0
+ * 0   0   0   0
+ * <p>
  * to zablokowalismy przeciwnikowi 7 ruchow przedstawionych ponizej
- *
- *      0   -   -   0
- *      -   -   -   -
- *      0   -   -   0
- *      0   0   0   0
- *
+ * <p>
+ * 0   -   -   0
+ * -   -   -   -
+ * 0   -   -   0
+ * 0   0   0   0
  */
 public class App {
 
     /**
      * main
+     *
      * @param args
      * @throws Exception
      */
@@ -45,6 +45,7 @@ public class App {
 
     /**
      * nakladka na rozgrywke
+     *
      * @throws Exception
      */
     private static void game() throws Exception {
@@ -57,14 +58,24 @@ public class App {
         BST binarySearchTree = new BST();
         FindCoordinates findCoordinates = new FindCoordinates(matrix.getMatrix(), binarySearchTree);
 
-        String regex = "\\dx\\d\\_\\dx\\d";
+        String regex = "\\d+[xX]\\d+\\_\\d+[xX]\\d+";
         String start = scan.nextLine();
         String opponentMove;
         if (start.equalsIgnoreCase("start")) {
             do {
+                //Long s = System.currentTimeMillis();
                 putMyPoints(matrix.getMatrix(), findCoordinates);
+                //System.out.println(System.currentTimeMillis() - s); - sprawdzenie czy mieszcze sie w czasie
+                //dla planszy 5x5 dziala znakomicie
+                //dla planszy 999x999 dziala znacznie wolniej przez wyszukiwanie czy w wierszu lub kolumnie
+                //sa tylko dwa wolne miejsca
+                // na potrzeby wojny algorytmow gdzie plansza jest 5x5 z jedna przeszkoda
+                //wyszukiwanie czy zostaly dwa miejsca w wierszu lub kolumnie zostaja gdyz znacznie zwieksza
+                //to moja szanse na wygrana
                 opponentMove = scan.nextLine();
-                putOpponentPoints(opponentMove, matrix.getMatrix());
+                if (opponentMove.matches(regex)) {
+                    putOpponentPoints(opponentMove, matrix.getMatrix());
+                }
             } while (opponentMove.matches(regex));
         } else if (start.matches(regex)) {
             opponentMove = start;
@@ -78,6 +89,7 @@ public class App {
 
     /**
      * kladzie bloczek przeciwnika na plansze
+     *
      * @param points
      * @param matrix
      * @throws Exception
@@ -85,13 +97,15 @@ public class App {
     private static void putOpponentPoints(String points, Matrix matrix) throws Exception {
         MatrixUtil matrixUtil = new MatrixUtil(matrix);
         String[] parsedPoints = points.split("_");
-        int P1row = Integer.parseInt(String.valueOf(parsedPoints[0].charAt(0)));
-        int P1column = Integer.parseInt(String.valueOf(parsedPoints[0].charAt(2)));
-        int P2row = Integer.parseInt(String.valueOf(parsedPoints[1].charAt(0)));
-        int P2column = Integer.parseInt(String.valueOf(parsedPoints[1].charAt(2)));
+        String[] parsedPointOne = parsedPoints[0].split("[xX]");
+        String[] parsedPointTwo = parsedPoints[1].split("[xX]");
+        int P1column = Integer.parseInt(String.valueOf(parsedPointOne[0]));
+        int P1row = Integer.parseInt(String.valueOf(parsedPointOne[1]));
+        int P2column = Integer.parseInt(String.valueOf(parsedPointTwo[0]));
+        int P2row = Integer.parseInt(String.valueOf(parsedPointTwo[1]));
 
-        Point p1 = new Point(P1row, P1column);
-        Point p2 = new Point(P2row, P2column);
+        Point p1 = new Point(P1column, P1row);
+        Point p2 = new Point(P2column, P2row);
 
         if (matrixUtil.isFree(p1.x, p1.y) && matrixUtil.isFree(p2.x, p2.y)) {
             matrix.setValue(p1, 'X');
@@ -103,6 +117,7 @@ public class App {
 
     /**
      * kladzie moj bloczek na plansze i wyswietla go na konsoli
+     *
      * @param matrix
      * @param findCoordinates
      * @throws Exception

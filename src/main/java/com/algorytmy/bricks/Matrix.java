@@ -39,7 +39,14 @@ public class Matrix {
         if (value < '0') {
             throw new IllegalArgumentException("Lower than ASCII('0') ");
         }
-        matrix[p.x][p.y] = value;
+        matrix[p.y][p.x] = value;
+    }
+
+    public void setValue(int row, int column, char value) {
+        if (value < '0') {
+            throw new IllegalArgumentException("Lower than ASCII('0') ");
+        }
+        matrix[row][column] = value;
     }
 
     private String matrixSizeToString() {
