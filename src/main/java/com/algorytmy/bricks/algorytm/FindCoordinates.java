@@ -32,9 +32,9 @@ public class FindCoordinates {
         // j kolumny
         for (int i = 0; i < matrix.getMatrixSize(); i++) {
             for (int j = 0; j < matrix.getMatrixSize() - 1; j++) {
-                if (matrixUtil.isFree(j, i) && matrixUtil.isFree(j+1, i)) {
+                if (matrixUtil.isFree(j, i) && matrixUtil.isFree(j + 1, i)) {
                     Point p1 = new Point(j, i);
-                    Point p2 = new Point(j+1, i);
+                    Point p2 = new Point(j + 1, i);
                     horizontalPoints.add(p1);
                     horizontalPoints.add(p2);
                 }
@@ -54,9 +54,9 @@ public class FindCoordinates {
         // j kolumny
         for (int i = 0; i < matrix.getMatrixSize() - 1; i++) {
             for (int j = 0; j < matrix.getMatrixSize(); j++) {
-                if (matrixUtil.isFree(j, i) && matrixUtil.isFree(j, i+1)) {
+                if (matrixUtil.isFree(j, i) && matrixUtil.isFree(j, i + 1)) {
                     Point p1 = new Point(j, i);
-                    Point p2 = new Point(j, i+1);
+                    Point p2 = new Point(j, i + 1);
                     verticalPoints.add(p1);
                     verticalPoints.add(p2);
                 }
@@ -203,16 +203,21 @@ public class FindCoordinates {
      */
     private Point[] findLastTwoInARowOrColumn(MatrixUtil matrixUtil) {
         Point[] answer = new Point[2];
-        for (int i = 0; i < matrix.getMatrixSize() - 1; i++) {
-            for (int j = 0; j < matrix.getMatrixSize() - 1; j++) {
-                if (countFreePlacesInARow(i, matrixUtil) == 2 && matrixUtil.isFree(j, i) && matrixUtil.isFree(j+1, i)) {
-                    answer[0] = new Point(j, i);
-                    answer[1] = new Point(j + 1, i);
-                    return answer;
-                } else if (countFreePlacesInAColumn(j, matrixUtil) == 2 && matrixUtil.isFree(j, i) && matrixUtil.isFree(j, i+1)) {
-                    answer[0] = new Point(j, i);
-                    answer[1] = new Point(j, i + 1);
-                    return answer;
+        for (int i = 0; i < matrix.getMatrixSize(); i++) {
+            for (int j = 0; j < matrix.getMatrixSize(); j++) {
+                if (j < matrix.getMatrixSize() - 1) {
+                    if (countFreePlacesInARow(i, matrixUtil) == 2 && matrixUtil.isFree(j, i) && matrixUtil.isFree(j + 1, i)) {
+                        answer[0] = new Point(j, i);
+                        answer[1] = new Point(j + 1, i);
+                        return answer;
+                    }
+                }
+                if (i < matrix.getMatrixSize() - 1) {
+                    if (countFreePlacesInAColumn(j, matrixUtil) == 2 && matrixUtil.isFree(j, i) && matrixUtil.isFree(j, i + 1)) {
+                        answer[0] = new Point(j, i);
+                        answer[1] = new Point(j, i + 1);
+                        return answer;
+                    }
                 }
             }
         }

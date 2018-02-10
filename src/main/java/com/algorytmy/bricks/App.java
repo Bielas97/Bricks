@@ -54,6 +54,7 @@ public class App {
         LoadMatrix matrix = new LoadMatrix();
         matrix.setMatrix(rules);
         System.out.println("OK");
+       // System.out.println(matrix.getMatrix());
 
         BST binarySearchTree = new BST();
         FindCoordinates findCoordinates = new FindCoordinates(matrix.getMatrix(), binarySearchTree);
@@ -81,7 +82,9 @@ public class App {
             opponentMove = start;
             do {
                 putOpponentPoints(opponentMove, matrix.getMatrix());
+               // System.out.println(matrix.getMatrix());
                 putMyPoints(matrix.getMatrix(), findCoordinates);
+                //System.out.println(matrix.getMatrix());
                 opponentMove = scan.nextLine();
             } while (opponentMove.matches(regex));
         }

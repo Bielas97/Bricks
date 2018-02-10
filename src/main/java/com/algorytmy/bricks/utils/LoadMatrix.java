@@ -32,7 +32,7 @@ public class LoadMatrix {
             y = Integer.parseInt(String.valueOf(points[0]));
             x = Integer.parseInt(String.valueOf(points[1]));
 
-            Point p = new Point(x, y);
+            Point p = new Point(y, x);
             matrix.setValue(p, 'X');
         }
         ok = true;
